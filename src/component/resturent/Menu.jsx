@@ -1,19 +1,47 @@
-import React from "react";
+import React,{ useState, useEffect, useRef } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MenuList } from "../../assets/contents";
 import { IoAddCircleOutline } from "react-icons/io5";
-import { Link } from "react-scroll";
+import { Link, scroller } from "react-scroll";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Menu = () => {
-  // const handleSelectChange = (event) => {
-  //   const title = event.target.value.replace(/\s+/g, "").toLowerCase();
-  //   scroller.scrollTo(title, {
-  //     duration: 500,
-  //     delay: 0,
-  //     smooth: "easeInOutQuart",
-  //     offset: -70,
-  //   });
-  // };
+  const sidebarRef = useRef(null);
+  useGSAP(() => {
+    const sidebarElement = sidebarRef.current;
+    gsap.to(sidebarElement, {
+      scrollTrigger: {
+        trigger: sidebarElement,
+        start: "top 20%",
+        end: "+=500%", // Adjust as needed
+        pin: true,
+        pinSpacing: false,
+        onEnter: () => sidebarElement.classList.add("fixed", "top-0", "left-0"),
+        onLeave: () => sidebarElement.classList.remove("fixed", "top-0", "left-0"),
+        onEnterBack: () => sidebarElement.classList.add("fixed", "top-0", "left-0"),
+        onLeaveBack: () => sidebarElement.classList.remove("fixed", "top-0", "left-0"),
+      }
+    });
+    return () => {
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
+  }, []);
+
+
+    
+  const handleSelectChange = (event) => {
+    const title = event.target.value.replace(/\s+/g, "").toLowerCase();
+    scroller.scrollTo(title, {
+      duration: 500,
+      delay: 0,
+      smooth: "easeInOutQuart",
+      offset: -70,
+    });
+  };
 
   return (
     <div className="w-full py-5 px-1">
@@ -27,7 +55,7 @@ const Menu = () => {
           className="mx-5 md:hidden outline-none border-none shadow-sm shadow-gray-400 p-3 rounded font-roboto text-gray-400"
           name="menu"
           id="menu"
-          // onChange={handleSelectChange}
+          onChange={handleSelectChange}
         >
           {MenuList.map((item, index) => (
             <option key={index} value={item.title}>
@@ -49,7 +77,9 @@ const Menu = () => {
 
       <div className="w-full lg:w-2/3 flex gap-5">
         {/* Sidebar */}
-        <div className="hidden md:block w-1/3">
+        <div
+        ref={sidebarRef}
+        className="hidden md:block w-1/3">
           <ul className="flex flex-col items-start gap-2 px-3">
             {MenuList.map((item, index) => {
               const sanitizedTitle = item.title
