@@ -2,6 +2,7 @@ import React from 'react'
 import Header from './component/header/Header';
 import {RouterProvider} from 'react-router-dom'
 import router from './Routes';
+import Footer from './component/header/Footer';
 
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
       <div className='w-full'>
         <RouterProvider router={router}/>
       </div>
+      <Footer/>
     </div>
   ) 
 }
